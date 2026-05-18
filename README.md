@@ -113,6 +113,22 @@ With ntfy, the `autoApprove` list in `~/.claude-remote-approver.json` handles pe
 
 > **Recommended setup:** use both. ntfy handles permission approvals with one-tap buttons; Claude iOS Remote Control handles task-complete notifications and session control. Two apps, two purposes.
 
+## Recommended setup: ntfy + Remote Control
+
+For the full remote workflow, add these keys to `~/.claude/settings.json`:
+
+```json
+{
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true
+}
+```
+
+With these set, every `claude` session auto-registers in the Claude iOS app — no `--remote-control` flag needed. Combined with the ntfy hook above, you get one-tap permission approvals via ntfy plus task-complete and decision pushes via the native Claude iOS app.
+
+**Requires:** Claude Code v2.1.110+, a Pro/Max/Team/Enterprise plan, and the Claude iOS app signed into the same account.
+
 ## Credits
 
 - [claude-remote-approver](https://github.com/yuuichieguchi/claude-remote-approver) by Yuuichi Eguchi — does all the heavy lifting (SSE long-poll, Approve/Deny buttons, timeout fallback)
