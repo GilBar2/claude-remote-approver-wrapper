@@ -91,6 +91,28 @@ Start a fresh Claude Code session, trigger any permission prompt, tap **Approve*
 
 See `.claude-remote-approver.json.example` in this repo.
 
+## Why ntfy over the native Claude iOS app?
+
+Claude Code v2.1.110+ supports native push notifications to the Claude iOS app via Remote Control. Here's why you might still prefer ntfy for permission approvals:
+
+### 1. No action buttons in the native notification
+
+ntfy pushes arrive with **Approve / Deny tappable buttons** — you never open an app, just tap the notification. Native Claude iOS push says "Claude needs a decision" → you have to unlock phone → open Claude app → find the session → respond. That's ~5 steps vs 1.
+
+### 2. Permission prompts are terminal UI, not chat
+
+Claude Code's permission prompts are interactive keypresses (`y`/`n`/`a`). How well they render in the Remote Control chat interface is untested. It may work fine, or it may be awkward.
+
+### 3. Timeout risk
+
+The ntfy hook has a 120s window. If you're slow to open the Claude app, the prompt times out and falls back to the terminal. With ntfy buttons, you respond in seconds without opening anything.
+
+### 4. "Always allow" is harder natively
+
+With ntfy, the `autoApprove` list in `~/.claude-remote-approver.json` handles persistent always-allow rules. Native iOS doesn't give you that — you'd have to respond every time for the same tool.
+
+> **Recommended setup:** use both. ntfy handles permission approvals with one-tap buttons; Claude iOS Remote Control handles task-complete notifications and session control. Two apps, two purposes.
+
 ## Credits
 
 - [claude-remote-approver](https://github.com/yuuichieguchi/claude-remote-approver) by Yuuichi Eguchi — does all the heavy lifting (SSE long-poll, Approve/Deny buttons, timeout fallback)
