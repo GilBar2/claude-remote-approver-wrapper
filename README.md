@@ -85,9 +85,25 @@ Start a fresh Claude Code session, trigger any permission prompt, tap **Approve*
 `~/.claude-remote-approver.json`:
 ```json
 {
-  "topic": "your-ntfy-topic-here"
+  "topic": "your-ntfy-topic-here",
+  "ntfyServer": "https://ntfy.sh",
+  "timeout": 600,
+  "planTimeout": 600,
+  "autoApprove": [],
+  "autoDeny": []
 }
 ```
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `topic` | Your ntfy topic ID (from `claude-remote-approver setup`) | required |
+| `ntfyServer` | ntfy server URL | `https://ntfy.sh` |
+| `timeout` | Seconds to wait for your tap before falling back to terminal | `600` |
+| `planTimeout` | Same, for plan-mode prompts | `600` |
+| `autoApprove` | Tool patterns to approve silently without notification | `[]` |
+| `autoDeny` | Tool patterns to deny silently without notification | `[]` |
+
+**Timeout guidance:** 600s (10 min) is a practical maximum. If you miss the notification, Claude Code is frozen until the timeout expires — shorter = faster fallback.
 
 See `.claude-remote-approver.json.example` in this repo.
 
@@ -105,7 +121,7 @@ Claude Code's permission prompts are interactive keypresses (`y`/`n`/`a`). How w
 
 ### 3. Timeout risk
 
-The ntfy hook has a 120s window. If you're slow to open the Claude app, the prompt times out and falls back to the terminal. With ntfy buttons, you respond in seconds without opening anything.
+The ntfy hook waits up to `timeout` seconds for your tap. With ntfy buttons you respond in seconds without opening anything; with the native app you'd need to open it and navigate to the session.
 
 ### 4. "Always allow" is harder natively
 
