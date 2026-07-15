@@ -96,11 +96,65 @@ Start a fresh Claude Code session, trigger any permission prompt, tap **Approve*
 `~/.claude-remote-approver.json`:
 ```json
 {
-  "topic": "your-ntfy-topic-here"
+  "topic": "your-ntfy-topic-here",
+  "ntfyServer": "https://ntfy.sh",
+  "timeout": 600,
+  "planTimeout": 600,
+  "autoApprove": [],
+  "autoDeny": []
 }
 ```
 
+| Key | Description | Default |
+|-----|-------------|---------|
+| `topic` | Your ntfy topic ID (from `claude-remote-approver setup`) | required |
+| `ntfyServer` | ntfy server URL | `https://ntfy.sh` |
+| `timeout` | Seconds to wait for your tap before falling back to terminal | `600` |
+| `planTimeout` | Same, for plan-mode prompts | `600` |
+| `autoApprove` | Tool patterns to approve silently without notification | `[]` |
+| `autoDeny` | Tool patterns to deny silently without notification | `[]` |
+
+**Timeout guidance:** 600s (10 min) is a practical maximum. If you miss the notification, Claude Code is frozen until the timeout expires — shorter = faster fallback.
+
 See `.claude-remote-approver.json.example` in this repo.
+
+## Why ntfy over the native Claude iOS app?
+
+Claude Code v2.1.110+ supports native push notifications to the Claude iOS app via Remote Control. Here's why you might still prefer ntfy for permission approvals:
+
+### 1. No action buttons in the native notification
+
+ntfy pushes arrive with **Approve / Deny tappable buttons** — you never open an app, just tap the notification. Native Claude iOS push says "Claude needs a decision" → you have to unlock phone → open Claude app → find the session → respond. That's ~5 steps vs 1.
+
+### 2. Permission prompts are terminal UI, not chat
+
+Claude Code's permission prompts are interactive keypresses (`y`/`n`/`a`). How well they render in the Remote Control chat interface is untested. It may work fine, or it may be awkward.
+
+### 3. Timeout risk
+
+The ntfy hook waits up to `timeout` seconds for your tap. With ntfy buttons you respond in seconds without opening anything; with the native app you'd need to open it and navigate to the session.
+
+### 4. "Always allow" is harder natively
+
+With ntfy, the `autoApprove` list in `~/.claude-remote-approver.json` handles persistent always-allow rules. Native iOS doesn't give you that — you'd have to respond every time for the same tool.
+
+> **Recommended setup:** use both. ntfy handles permission approvals with one-tap buttons; Claude iOS Remote Control handles task-complete notifications and session control. Two apps, two purposes.
+
+## Recommended setup: ntfy + Remote Control
+
+For the full remote workflow, add these keys to `~/.claude/settings.json`:
+
+```json
+{
+  "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true
+}
+```
+
+With these set, every `claude` session auto-registers in the Claude iOS app — no `--remote-control` flag needed. Combined with the ntfy hook above, you get one-tap permission approvals via ntfy plus task-complete and decision pushes via the native Claude iOS app.
+
+**Requires:** Claude Code v2.1.110+, a Pro/Max/Team/Enterprise plan, and the Claude iOS app signed into the same account.
 
 ## Credits
 

@@ -1,3 +1,8 @@
 {
-  "topic": "your-ntfy-topic-here"
+  "topic": "your-ntfy-topic-here",
+  "ntfyServer": "https://ntfy.sh",
+  "timeout": 600,
+  "planTimeout": 600,
+  "autoApprove": [],
+  "autoDeny": []
 }
