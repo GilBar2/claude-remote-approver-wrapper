@@ -12,6 +12,17 @@ A wrapper script for [claude-remote-approver](https://github.com/yuuichieguchi/c
 
 The second notification closes the loop — you know Claude got the green light without checking your screen again.
 
+## vs. Anthropic's Dispatch
+
+- **What ntfy is:** [ntfy.sh](https://ntfy.sh) is a free, open-source push notification service. Subscribe to a topic on your phone, and anything published to that topic shows up as a notification. This wrapper uses it to send Approve/Deny prompts (and confirmations) to your phone.
+- **Dispatch**, Anthropic's built-in feature for running Claude Code tasks in the cloud, unattended:
+  - Runs pre-authorized in a sandbox, no local file access, so nothing needs approval.
+  - Best for long jobs that don't need your machine.
+- **This wrapper** runs entirely on your own machine, with full access to your files and tools:
+  - Routes each risky action to your phone via ntfy for a real Approve/Deny before it happens.
+  - Best for tasks that need your local setup, but you still want to step away from the keyboard.
+- **Bottom line:** Dispatch when the task doesn't need your machine. This wrapper when it does.
+
 ## Prerequisites
 
 - [claude-remote-approver](https://github.com/yuuichieguchi/claude-remote-approver) installed globally:
